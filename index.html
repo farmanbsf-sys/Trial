@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b5d3b">
+<title>River Impact Cisadane — Interceptor 020</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="brand-mark">〰</div>
+    <h1>River Impact Cisadane</h1>
+    <p>Sistem Monitoring dan Pengelolaan Persampahan</p>
+    <div class="unit-badge">Interceptor 020</div>
+    <form id="loginForm">
+      <label>Username<input id="loginUsername" required value="admin"></label>
+      <label>Password<input id="loginPassword" type="password" required value="admin123"></label>
+      <button class="btn btn-primary btn-block" type="submit">Masuk ke Sistem</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<header class="topbar">
+  <div class="brand">
+    <button class="icon-btn mobile-only" id="menuBtn">☰</button>
+    <div class="brand-wave">〰</div>
+    <div><strong>River Impact Cisadane</strong><span>Interceptor 020</span></div>
+  </div>
+  <div class="top-actions">
+    <span id="currentUser" class="user-chip"></span>
+    <button class="icon-btn" id="logoutBtn" title="Keluar">↪</button>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <nav>
+    <button class="nav-item active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+    <button class="nav-item" data-page="input-sungai">＋ <span>Input Sampah Sungai</span></button>
+    <button class="nav-item" data-page="input-warga">＋ <span>Input Sampah Warga</span></button>
+    <button class="nav-item" data-page="sungai">≋ <span>Data Sampah Sungai</span></button>
+    <button class="nav-item" data-page="warga">⌂ <span>Data Sampah Warga</span></button>
+    <button class="nav-item" data-page="armada">▣ <span>Data Armada</span></button>
+    <button class="nav-item" data-page="neraca">◈ <span>Neraca Sampah</span></button>
+    <button class="nav-item" data-page="laporan">▤ <span>Laporan</span></button>
+    <button class="nav-item" data-page="pengaturan">⚙ <span>Pengaturan</span></button>
+    <button class="nav-item danger-text" id="resetDataBtn">♲ <span>Reset Semua Data</span></button>
+  </nav>
+  <div class="sidebar-footer">RIVER IMPACT CISADANE<br><small>v1.0 • Interceptor 020</small></div>
+</aside>
+
+<main class="content">
+<section id="page-dashboard" class="page active">
+  <div class="page-heading">
+    <div><span class="eyebrow">MONITORING</span><h2>Dashboard Utama</h2><p>Ringkasan pengelolaan persampahan berdasarkan periode.</p></div>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-grid">
+      <label>Periode Data<select id="periodFilter">
+        <option value="today">Hari Ini</option><option value="yesterday">Kemarin</option>
+        <option value="7days">7 Hari</option><option value="month">Bulan Ini</option>
+        <option value="year">Tahun Ini</option><option value="all">Semua Waktu</option><option value="custom">Custom Date</option>
+      </select></label>
+      <label id="customStartWrap" class="hidden">Tanggal Mulai<input type="date" id="customStart"></label>
+      <label id="customEndWrap" class="hidden">Tanggal Akhir<input type="date" id="customEnd"></label>
+    </div>
+    <div class="export-row">
+      <button class="btn btn-danger" id="pdfBtn">📄 Cetak PDF</button>
+      <button class="btn btn-success" id="excelBtn">📊 Export Excel</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card blue"><div class="stat-icon">≋</div><div><span>SAMPAH SUNGAI</span><strong id="statSungai">0 kg</strong><small id="countSungai">0 catatan terekam</small></div><i></i></div>
+    <div class="stat-card orange"><div class="stat-icon">⌂</div><div><span>SAMPAH WARGA</span><strong id="statWarga">0 kg</strong><small id="countWarga">0 catatan terekam</small></div><i></i></div>
+    <div class="stat-card green"><div class="stat-icon">▣</div><div><span>TRUK MUATAN KELUAR</span><strong id="statTruk">0 Ton</strong><small id="countTruk">0 armada operasional</small></div><i></i></div>
+  </div>
+
+  <div class="balance-card">
+    <div class="section-title"><div><span class="eyebrow">REKAP</span><h3>⚖ Neraca Sampah</h3></div><button class="btn btn-light" data-page="neraca">Detail</button></div>
+    <div class="balance-grid">
+      <div><span>Sampah Sungai + Sampah Warga</span><strong id="balanceIn">0 kg</strong><small>Total Sampah Masuk</small></div>
+      <div class="operator">+</div>
+      <div><span>Total Muatan Keluar</span><strong id="balanceOut">0 kg</strong><small>Armada truk</small></div>
+      <div class="operator">=</div>
+      <div class="saldo"><span>Selisih / Saldo Sampah</span><strong id="balanceDiff">0 kg</strong><small id="balanceLabel">Total masuk − total keluar</small></div>
+    </div>
+    <p class="muted-note">Angka merupakan hasil pencatatan berdasarkan data yang dimasukkan operator pada sistem.</p>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card"><div class="section-title"><h3>Sampah Masuk per Hari</h3></div><canvas id="dailyChart"></canvas></div>
+    <div class="chart-card"><div class="section-title"><h3>Sungai vs Warga</h3></div><canvas id="sourceChart"></canvas></div>
+    <div class="chart-card"><div class="section-title"><h3>Muatan Truk Keluar</h3></div><canvas id="truckChart"></canvas></div>
+    <div class="chart-card"><div class="section-title"><h3>Jenis Sampah</h3></div><canvas id="typeChart"></canvas></div>
+  </div>
+
+  <div class="table-card">
+    <div class="section-title"><div><span class="eyebrow">AKTIVITAS</span><h3>Data Terbaru</h3></div><button class="btn btn-light" data-page="sungai">Lihat Semua Data</button></div>
+    <div class="table-scroll"><table><thead><tr><th>Tanggal</th><th>Sumber</th><th>Lokasi</th><th>Berat</th><th>Petugas</th><th>Status</th></tr></thead><tbody id="recentTable"></tbody></table></div>
+  </div>
+</section>
+
+<section id="page-input-sungai" class="page"><div class="page-heading"><div><span class="eyebrow">INPUT</span><h2>Tambah Data Sampah Sungai</h2><p>Catat hasil pengambilan sampah sungai.</p></div></div>
+<form class="form-card" id="sungaiForm">
+<input type="hidden" id="sungaiId">
+<div class="form-grid">
+<label>Tanggal<input type="date" id="sTanggal" required></label><label>Jam<input type="time" id="sJam" required></label>
+<label>Lokasi<input id="sLokasi" placeholder="Contoh: Interceptor 020" required></label><label>Nama petugas<input id="sPetugas" required></label>
+<label>Berat sampah (kg)<input type="number" id="sBerat" min="0" step="0.01" required></label>
+<label>Jenis sampah<select id="sJenis"><option>Organik</option><option>Anorganik</option><option>Kayu</option><option>Residu</option><option>Campuran</option><option>Lainnya</option></select></label>
+<label>Metode pengambilan<select id="sMetode"><option>Manual</option><option>Conveyor/Interceptor</option><option>Alat berat</option><option>Lainnya</option></select></label>
+<label>Foto dokumentasi<input type="file" id="sFoto" accept="image/*"></label>
+<label class="full">Catatan<textarea id="sCatatan" rows="3"></textarea></label>
+</div><div class="form-actions"><button type="button" class="btn btn-light" onclick="resetSungaiForm()">Bersihkan</button><button class="btn btn-primary">Simpan Data</button></div>
+</form></section>
+
+<section id="page-input-warga" class="page"><div class="page-heading"><div><span class="eyebrow">INPUT</span><h2>Tambah Data Sampah Warga</h2><p>Catat sampah yang berasal dari wilayah warga.</p></div></div>
+<form class="form-card" id="wargaForm">
+<input type="hidden" id="wargaId"><div class="form-grid">
+<label>Tanggal<input type="date" id="wTanggal" required></label><label>Nama wilayah<input id="wWilayah" required></label>
+<label>RT/RW<input id="wRtRw" placeholder="001/002"></label><label>Nama petugas<input id="wPetugas" required></label>
+<label>Jumlah warga/rumah<input type="number" id="wJumlah" min="0"></label><label>Berat sampah (kg)<input type="number" id="wBerat" min="0" step="0.01" required></label>
+<label>Jenis sampah<select id="wJenis"><option>Plastik</option><option>Organik</option><option>Kayu</option><option>Styrofoam</option><option>Residu</option><option>Logam</option><option>Campuran</option><option>Lainnya</option></select></label>
+<label>Sumber sampah<input id="wSumber" placeholder="Rumah tangga / pasar / lainnya"></label>
+<label>Foto dokumentasi<input type="file" id="wFoto" accept="image/*"></label>
+<label class="full">Catatan<textarea id="wCatatan" rows="3"></textarea></label>
+</div><div class="form-actions"><button type="button" class="btn btn-light" onclick="resetWargaForm()">Bersihkan</button><button class="btn btn-primary">Simpan Data</button></div>
+</form></section>
+
+<section id="page-sungai" class="page"><div class="page-heading"><div><span class="eyebrow">DATABASE</span><h2>Data Sampah Sungai</h2></div></div><div class="table-card"><div class="toolbar"><input id="searchSungai" placeholder="🔎 Cari lokasi, petugas, jenis..."><select id="filterJenisSungai"><option value="">Semua jenis</option><option>Plastik</option><option>Organik</option><option>Kayu</option><option>Styrofoam</option><option>Kain</option><option>Logam</option><option>Campuran</option><option>Lainnya</option></select></div><div class="table-scroll"><table><thead><tr><th>Tanggal</th><th>Lokasi</th><th>Petugas</th><th>Berat</th><th>Jenis</th><th>Foto</th><th>Aksi</th></tr></thead><tbody id="sungaiTable"></tbody></table></div></div></section>
+
+<section id="page-warga" class="page"><div class="page-heading"><div><span class="eyebrow">DATABASE</span><h2>Data Sampah Warga</h2></div></div><div class="table-card"><div class="toolbar"><input id="searchWarga" placeholder="🔎 Cari wilayah, RT/RW, petugas..."></div><div class="table-scroll"><table><thead><tr><th>Tanggal</th><th>Wilayah</th><th>RT/RW</th><th>Petugas</th><th>Berat</th><th>Jenis</th><th>Aksi</th></tr></thead><tbody id="wargaTable"></tbody></table></div></div></section>
+
+<section id="page-armada" class="page"><div class="page-heading"><div><span class="eyebrow">ARMADA</span><h2>Armada Operasional</h2></div><button class="btn btn-primary" data-page="input-armada">＋ Tambah Armada</button></div>
+<div class="table-card"><div class="table-scroll"><table><thead><tr><th>No</th><th>Nomor Armada</th><th>Jenis Truk</th><th>Pengemudi</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="armadaTable"></tbody></table></div></div>
+<div class="form-card compact" id="armadaFormWrap"><h3>Input / Edit Armada</h3><form id="armadaForm"><input type="hidden" id="aId"><div class="form-grid"><label>Nomor Armada<input id="aNomor" required placeholder="B 1234 XYZ"></label><label>Jenis Truk<input id="aJenis" required placeholder="Dump Truck"></label><label>Pengemudi<input id="aDriver"></label><label>Status<select id="aStatus"><option>Beroperasi</option><option>Selesai</option><option>Dalam Perjalanan</option><option>Perawatan</option></select></label></div><div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Armada</button></div></form></div>
+<h3 class="subheading">Pencatatan Truk Keluar</h3><form class="form-card" id="muatanForm"><input type="hidden" id="mId"><div class="form-grid">
+<label>Tanggal<input type="date" id="mTanggal" required></label><label>Nomor armada<select id="mArmada" required></select></label>
+<label>Lokasi pengambilan<input id="mLokasi"></label><label>Berat awal (kg)<input type="number" id="mAwal" min="0" step="0.01"></label>
+<label>Berat muatan<input type="number" id="mBerat" min="0" step="0.01" required></label><label>Satuan<select id="mUnit"><option value="kg">kg</option><option value="ton">ton</option></select></label>
+<label>Tujuan pembuangan/pengolahan<input id="mTujuan"></label><label>Jam keluar<input type="time" id="mKeluar"></label>
+<label>Jam tiba<input type="time" id="mTiba"></label><label>Petugas<input id="mPetugas"></label>
+<label>Foto tiket timbang<input type="file" id="mFoto" accept="image/*"></label><label>Status<select id="mStatus"><option>Beroperasi</option><option>Selesai</option><option>Dalam Perjalanan</option></select></label>
+<label class="full">Catatan<textarea id="mCatatan" rows="3"></textarea></label>
+</div><div class="form-actions"><button type="button" class="btn btn-light" onclick="resetMuatanForm()">Bersihkan</button><button class="btn btn-primary">Simpan Muatan Keluar</button></div></form>
+<div class="table-card"><div class="section-title"><h3>Riwayat Muatan Keluar</h3></div><div class="table-scroll"><table><thead><tr><th>Tanggal</th><th>Armada</th><th>Berat</th><th>Tujuan</th><th>Petugas</th><th>Aksi</th></tr></thead><tbody id="muatanTable"></tbody></table></div></div>
+</section>
+
+<section id="page-neraca" class="page"><div class="page-heading"><div><span class="eyebrow">NERACA</span><h2>Neraca Sampah</h2><p>Perbandingan sampah masuk dengan muatan keluar.</p></div></div><div class="balance-card large"><div class="balance-grid"><div><span>Sampah Sungai</span><strong id="nSungai">0 kg</strong></div><div class="operator">+</div><div><span>Sampah Warga</span><strong id="nWarga">0 kg</strong></div><div class="operator">=</div><div><span>Total Sampah Masuk</span><strong id="nMasuk">0 kg</strong></div></div><hr><div class="balance-grid two"><div><span>Total Muatan Keluar</span><strong id="nKeluar">0 kg</strong></div>
+<section id="page-laporan" class="page"><div class="page-heading"><div><span class="eyebrow">PELAPORAN</span><h2>Laporan Persampahan</h2></div></div>
+<div class="filter-card"><div class="filter-grid"><label>Periode<select id="reportPeriod"><option value="all">Semua Waktu</option><option value="today">Hari Ini</option><option value="7days">7 Hari</option><option value="month">Bulan Ini</option><option value="year">Tahun Ini</option><option value="custom">Custom Date</option></select></label><label>Lokasi<input id="reportLocation" placeholder="Semua lokasi"></label><label>Jenis sampah<select id="reportType"><option value="">Semua</option><option>Anorganik</option><option>Organik</option><option>Kayu</option><option>Residu</option><option>Campuran</option><option>Lainnya</option></select></label><label>Petugas<input id="reportOfficer" placeholder="Semua petugas"></label><label>Armada<select id="reportArmada"><option value="">Semua armada</option></select></label></div><div class="export-row"><button class="btn btn-danger" id="reportPdfBtn">📄 Cetak PDF</button><button class="btn btn-success" id="reportExcelBtn">📊 Export Excel</button></div></div>
+<div class="stats-grid mini"><div class="mini-stat"><span>Total Sungai</span><strong id="rSungai">0 kg</strong></div><div class="mini-stat"><span>Total Warga</span><strong id="rWarga">0 kg</strong></div><div class="mini-stat"><span>Total Masuk</span><strong id="rMasuk">0 kg</strong></div><div class="mini-stat"><span>Muatan Keluar</span><strong id="rKeluar">0 kg</strong></div><div class="mini-stat"><span>Jumlah Armada</span><strong id="rArmada">0</strong></div><div class="mini-stat"><span>Jumlah Pencatatan</span><strong id="rRecords">0</strong></div></div>
+<div class="table-card"><div class="table-scroll"><table><thead><tr><th>Tanggal</th><th>Sumber</th><th>Lokasi</th><th>Berat</th><th>Petugas</th><th>Jenis</th></tr></thead><tbody id="reportTable"></tbody></table></div></div></section>
+
+<section id="page-pengaturan" class="page"><div class="page-heading"><div><span class="eyebrow">SISTEM</span><h2>Pengaturan</h2></div></div><div class="settings-grid"><div class="form-card"><h3>Informasi Sistem</h3><label>Nama aplikasi<input value="River Impact Cisadane" id="settingName"></label><label>Unit<input value="Interceptor 020" id="settingUnit"></label><button class="btn btn-primary" id="saveSettings">Simpan Pengaturan</button></div><div class="form-card"><h3>Backup Data</h3><p class="muted-note">Simpan seluruh data sistem ke file JSON dan pulihkan kembali kapan saja pada perangkat ini.</p><button class="btn btn-light" id="backupBtn">⬇ Backup JSON</button><label class="file-label">⬆ Restore JSON<input type="file" id="restoreInput" accept=".json"></label></div><div class="form-card"><h3>Audit Data</h3><div id="auditList" class="audit-list"></div></div></div></section>
+</main></div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal hidden"><div class="modal-box"><button class="modal-close" id="modalClose">×</button><div id="modalContent"></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
